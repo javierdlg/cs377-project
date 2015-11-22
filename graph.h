@@ -33,6 +33,6 @@ private:
 // Global Variables
 // -----------------
 
-vector<Node*> allNodes;
-vector<threadObject> threads;
-pthread_barrier_t barrier;
+static vector<Node*> allNodes;
+static vector<threadObject> threads;
+static pthread_barrier_t barrier;

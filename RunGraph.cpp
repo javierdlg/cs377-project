@@ -1,9 +1,31 @@
-#include "graph.h"
+/*
+* CPP file that runs the parallelized Bellman-Ford algorithm
+*/
+
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <string>
 
-void loadGraph(istream& r){
+#include "graph.h"
+
+void loadGraph(const ifstream file){
 	// read DIMACS file and add nodes/edges to the allNodes vector
+	stringstream line;
+	char id;
+	int maxNodes, maxEdges;
+	while (getline(file, line)){
+		line >> id;
+		if(id == 'c')
+			continue;
+		else if(id == 'p'){
+			line >> id >> maxNodes >> maxEdges;
+			allNodes.reserve(maxNodes);
+		}
+		else if(id == 'a'){
+
+		}
+	}
 }
 
 void divideWork(int threadNumber){
@@ -12,7 +34,7 @@ void divideWork(int threadNumber){
 
 void bellmanFord(threadObject* thread){
 	for(int i = 0; i < thread->inputNodes.size(); ++i){
-		
+
 	}
 }
 
@@ -24,7 +46,9 @@ void threadStart(void* args){
 }
 
 int main(int args char* argv[]){
-	loadGraph(argv[1]);
+	ifstream file(argv[0]);
+	loadGraph(file);
+
 	divideWork(argv[2]);
 	// Start threads
 

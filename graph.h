@@ -10,16 +10,9 @@
 #include <vector>
 #include <pthread.h>
 
-class Node{
-public:
-	vector<Edge*> input;
-	int cost;
-public:
-	Node(c) : cost(c);
-	void addEdge(Edge* e){
-		input.push_back(e);
-	};
-};
+using namespace std;
+
+class Node;
 
 class Edge{
 public:
@@ -27,11 +20,22 @@ public:
 	Node* destination;
 	int weight;
 public:
-	Egde(Node* s, Node* d, int w) : source(s), destination(d), weight(d);
+	Edge(Node* s, Node* d, int w) : source(s), destination(d), weight(w) {};
+};
+
+class Node{
+public:
+	vector<Edge*> input;
+	int cost;
+public:
+	Node(int c) : cost(c) {};
+	void addEdge(Edge* e){
+		input.push_back(e);
+	};
 };
 
 class threadObject{
-private:
+public:
 	pthread_t tid;
 	vector<Node*> inputNodes;
 };

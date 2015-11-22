@@ -33,10 +33,19 @@ void loadGraph(const ifstream file){
 
 void divideWork(int threadNumber){
 	// initialize threadObjects, assign nodes
+	threads.reserve(threadNumber);
+	for(int i = 0; i < threadNumber; ++i){
+		threadObject thread;
+		threads.push_back(thread);
+	}
 	for(i = 0; i < threadNumber; ++i){
 		for(j = i; j<allNodes.size(); j+=threadNumber){
 			threads[i].inputNodes.push_back(allNodes[j]);
+			}
 		}
+	}
+	for (int i = allNodes.size() - (allNodes.size()%threadNumber); i < allNodes.size(); ++i){
+		threads[threadNumber-1].inputNodes.push_back(allNodes[i]);
 	}
 }
 

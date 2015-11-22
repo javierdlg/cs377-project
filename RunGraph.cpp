@@ -14,7 +14,7 @@ void loadGraph(const ifstream file){
 	// read DIMACS file and add nodes/edges to the allNodes vector
 	stringstream line;
 	char id;
-	int maxNodes, maxEdges;
+	int maxNodes, maxEdges, nodeSource, nodeDestination, edge, weight;
 	while (getline(file, line)){
 		line >> id;
 		if(id == 'c')
@@ -24,7 +24,9 @@ void loadGraph(const ifstream file){
 			allNodes.reserve(maxNodes);
 		}
 		else if(id == 'a'){
-
+			line >> nodeSource >> nodeDestination >> weight;
+			Edge e(nodeSource, nodeDestination, weight);
+			allNodes[nodeDestination]->addEdge(&e);
 		}
 	}
 }

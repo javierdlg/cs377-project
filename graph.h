@@ -14,6 +14,11 @@ class Node{
 private:
 	vector<Edge*> input;
 	int cost;
+public:
+	Node(c) : cost(c);
+	void addEdge(Edge* e){
+		input.push_back(e);
+	};
 };
 
 class Edge{
@@ -21,6 +26,8 @@ private:
 	Node* source;
 	Node* destination;
 	int weight;
+public:
+	Egde(Node* s, Node* d, int w) : source(s), destination(d), weight(d);
 };
 
 class threadObject{

@@ -5,6 +5,23 @@
 
 void loadGraph(istream& r){
 	// read DIMACS file and add nodes/edges to the allNodes vector
+	stringstream line;
+	char id;
+	int maxNodes, maxEdges, nodeSource, nodeDestination, edge, weight;
+	while (getline(file, line)){
+		line >> id;
+		if(id == 'c')
+			continue;
+		else if(id == 'p'){
+			line >> id >> maxNodes >> maxEdges;
+			allNodes.reserve(maxNodes);
+		}
+		else if(id == 'a'){
+			line >> nodeSource >> nodeDestination >> weight;
+			Edge e(nodeSource, nodeDestination, weight);
+			allNodes[nodeDestination]->addEdge(&e);
+		}
+	}
 }
 
 void divideWork(int threadNumber){
@@ -15,7 +32,7 @@ void divideWork(int threadNumber){
 		threads.push_back(thread);
 	}
 	for(i = 0; i < threadNumber; ++i){
-		for(j = i; j<allNodes.size(); j+=threadNumber){
+		for(j = i; j < allNodes.size(); j += threadNumber){
 			threads[i].inputNodes.push_back(allNodes[j]);
 			}
 		}
@@ -31,7 +48,7 @@ void bellmanFord(threadObject* thread){
 		Node * node = thread->inputNodes[i];
 		for(int j = 0; j < node->input.size(); ++j){
 			Edge *edge = node->input[j];
-			if(edge->source->cost != INT_MAX && (edge->source->cost edge->value) < node->cost)
+			if(edge->source->cost != INT_MAX && (edge->source->cost + edge->value) < node->cost)
 				node->cost = edge->source->cost + edge->value;
 		}		
 	}
@@ -42,6 +59,12 @@ void threadStart(void* args){
 	args = (threadObject*)args;
 	for(int i = 0; i < (allNodes.size() - 1)/argv[2]; ++i){
 		bellmanFord(args);
+	}
+}
+
+void graphPrint(){
+	for(int i = 0; i < allNodes.size(); ++i){
+		cout << allNodes[i]->cost;
 	}
 }
 
@@ -57,5 +80,6 @@ int main(int args char* argv[]){
 
 	// pthread syncronize (barrier)
 
+	graphPrint();
 	// read and print graph
 }

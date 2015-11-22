@@ -11,7 +11,7 @@
 #include <pthread.h>
 
 class Node{
-private:
+public:
 	vector<Edge*> input;
 	int cost;
 public:
@@ -22,7 +22,7 @@ public:
 };
 
 class Edge{
-private:
+public:
 	Node* source;
 	Node* destination;
 	int weight;

@@ -1,34 +1,10 @@
-/*
-* CPP file that runs the parallelized Bellman-Ford algorithm
-*/
-
+#include "graph.h"
 #include <iostream>
 #include <vector>
-#include <fstream>
-#include <string>
-
-#include "graph.h"
 #include <climits>
 
-void loadGraph(const ifstream file){
+void loadGraph(istream& r){
 	// read DIMACS file and add nodes/edges to the allNodes vector
-	stringstream line;
-	char id;
-	int maxNodes, maxEdges, nodeSource, nodeDestination, edge, weight;
-	while (getline(file, line)){
-		line >> id;
-		if(id == 'c')
-			continue;
-		else if(id == 'p'){
-			line >> id >> maxNodes >> maxEdges;
-			allNodes.reserve(maxNodes);
-		}
-		else if(id == 'a'){
-			line >> nodeSource >> nodeDestination >> weight;
-			Edge e(nodeSource, nodeDestination, weight);
-			allNodes[nodeDestination]->addEdge(&e);
-		}
-	}
 }
 
 void divideWork(int threadNumber){
@@ -55,8 +31,8 @@ void bellmanFord(threadObject* thread){
 		Node * node = thread->inputNodes[i];
 		for(int j = 0; j < node->input.size(); ++j){
 			Edge *edge = node->input[j];
-			if(edge->source->cost != INT_MAX && edge->source->cost < node->cost)
-				node->cost = edge->source->cost;
+			if(edge->source->cost != INT_MAX && (edge->source->cost edge->value) < node->cost)
+				node->cost = edge->source->cost + edge->value;
 		}		
 	}
 	pthread_barrier_wait(&barrier);
@@ -70,9 +46,7 @@ void threadStart(void* args){
 }
 
 int main(int args char* argv[]){
-	ifstream file(argv[0]);
-	loadGraph(file);
-
+	loadGraph(argv[1]);
 	divideWork(argv[2]);
 	// Start threads
 	pthread_barrier_init(&barrier, null, argv[2]);

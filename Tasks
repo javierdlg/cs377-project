@@ -1,0 +1,7 @@
+- Make program compatable with DIMACS 9 (http://www.dis.uniroma1.it/challenge9/download.shtml)
+- Make the graph
+- Initialize threads with an even distribution of nodes
+- 
+
+Links: 
+Parallelizing BF http://kesshoryu.com/files/Parallel_Paper.pdf

@@ -2,6 +2,8 @@
 #include <vector>
 #include <climits>
 #include <sstream>
+#include <fstream>
+#include <string>
 
 #include "graph.h"
 
@@ -9,25 +11,30 @@ using namespace std;
 
 static int threadCount;
 
-void loadGraph(ifstream file){
+void loadGraph(const char* fileName){
 	// read DIMACS file and add nodes/edges to the allNodes vector
-	stringstream line;
-	char id;
+	ifstream in(fileName);
+	string line;
+	stringstream ss;
 	int maxNodes, maxEdges, nodeSource, nodeDestination, edge, weight;
-	while (getline(file, line)){
-		line >> id;
-		if(id == 'c')
+	while (getline(in, line)){
+		if(line.front() == 'c')
 			continue;
-		else if(id == 'p'){
-			line >> id >> maxNodes >> maxEdges;
+		else if(line.front() == 'p'){
+			ss << line << line << line;
+			ss >> maxNodes >> maxEdges;
 			allNodes.reserve(maxNodes);
+			ss.str(string());
 		}
-		else if(id == 'a'){
-			line >> nodeSource >> nodeDestination >> weight;
+		else if(line.front() == 'a'){
+			ss << line << line << line;
+			ss >>  weight >> nodeDestination >> nodeSource;
 			Edge e(allNodes[nodeSource], allNodes[nodeDestination], weight);
 			allNodes[nodeDestination]->addEdge(&e);
+			ss.str(string());
 		}
 	}
+	in.close();
 }
 
 void divideWork(int threadNumber){
@@ -73,9 +80,13 @@ void graphPrint(){
 	}
 }
 
+/*
+* Program runs as the following:
+* graphTest "Filename" ThreadCount
+*/
 int main(int args, char* argv[]){
 	threadCount = atoi(argv[2]);
-	loadGraph(atoi(argv[1]));
+	loadGraph(argv[1]);
 	divideWork(threadCount);
 
 	// Start threads

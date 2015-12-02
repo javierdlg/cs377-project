@@ -41,8 +41,8 @@ config:
 test: RunGraph.tmp
 
 RunGraph: graph.h RunGraph.cpp
-	$(CXX) $(CXXFLAGS) RunGraph.cpp -o RunGraph
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) RunGraph.cpp -o RunGraph
 
 RunGraph.tmp: RunGraph
-	./RunGraph < USA-road-d.NY.gr > RunGraph.tmp
+	./RunGraph < USA-road-d.NY.gr > RunGraph.tmp 
 	diff RunGraph.tmp RunGraph.out

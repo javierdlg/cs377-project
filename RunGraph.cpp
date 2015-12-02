@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <pthread.h>
+#include <ctime>
 #include "graph.h"
 
 using namespace std;
@@ -97,7 +98,7 @@ void bellmanFord(threadObject* thread){
 
 void* threadStart(void* args){
 	threadObject* args1 = (threadObject*)args;
-	for(unsigned int i = 0; i < (allNodes.size() - 1); ++i){
+	for(unsigned int i = 0; i < (allNodes.size() - 1) / threadCount; ++i){
 		bellmanFord(args1);
 	}
 	return args;
@@ -114,6 +115,8 @@ void graphPrint(){
 * graphTest "Filename" ThreadCount
 */
 int main(int args, char* argv[]){
+	clock_t start;
+
 	threadCount = atoi(argv[2]);
 
 	loadGraph(argv[1]);
@@ -122,6 +125,10 @@ int main(int args, char* argv[]){
 	allNodes[0]->cost = 0;
 	// Start threads
 	pthread_barrier_init(&barrier, NULL, threadCount);
+/*
+* Clock start
+*/
+	start = clock();
 	for(int i = 0; i < threadCount; ++i){
 		//pthread create
 		pthread_create (&(threads[i].tid), NULL, threadStart, (void *)(&threads[i]));
@@ -132,7 +139,10 @@ int main(int args, char* argv[]){
 	for(int i = 0; i < threadCount; ++i){
 		pthread_join(threads[i].tid, NULL);
 	}
-
+	cout << "Time: " << (clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl; 
+/*
+* Clock end
+*/
 	// read and print graph
 	graphPrint();
 }

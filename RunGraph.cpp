@@ -129,7 +129,7 @@ int main(int args, char* argv[]){
 * Clock start
 */
 	start = clock();
-	for(int i = 1; i < threadCount; ++i){
+	for(int i = 0; i < threadCount; ++i){
 		//pthread create
 		pthread_create (&(threads[i].tid), NULL, threadStart, (void *)(&threads[i]));
 	}

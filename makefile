@@ -57,8 +57,8 @@ RomeTest:
 	./RunGraph rometest.gr 16 > rometest16.tmp
 
 NYTest:
-	#./RunGraph USA-road-d.NY.gr 1 > USA-road-d.NY1.tmp
-	#./RunGraph USA-road-d.NY.gr 2 > USA-road-d.NY2.tmp
+	./RunGraph USA-road-d.NY.gr 1 > USA-road-d.NY1.tmp
+	./RunGraph USA-road-d.NY.gr 2 > USA-road-d.NY2.tmp
 	./RunGraph USA-road-d.NY.gr 4 > USA-road-d.NY4.tmp
 	./RunGraph USA-road-d.NY.gr 8 > USA-road-d.NY8.tmp
 	./RunGraph USA-road-d.NY.gr 16 > USA-road-d.NY16.tmp

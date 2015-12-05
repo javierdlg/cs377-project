@@ -38,12 +38,17 @@ class threadObject{
 public:
 	pthread_t tid;
 	vector<Node*> inputNodes;
+	bool threadComplete = true;
+	int threadID;
 };
 
 // -----------------
 // Global Variables
 // -----------------
-
+bool threadCheck();
 static vector<Node*> allNodes;
 static vector<threadObject> threads;
 static pthread_barrier_t barrier;
+static pthread_barrier_t barrierCheck;
+static pthread_barrier_t barrierCheck2;
+static pthread_mutex_t mutex;

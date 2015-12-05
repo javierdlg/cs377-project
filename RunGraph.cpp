@@ -8,11 +8,13 @@
 #include <ctime>
 #include "time.h"
 #include "graph.h"
+#include <atomic>
 #define BILLION 1E9
 using namespace std;
 
 static int threadCount;
-
+static std::atomic<int> cnt = ATOMIC_VAR_INIT(16);
+static bool test;
 void loadGraph(const char* fileName){
 	// read DIMACS file and add nodes/edges to the allNodes vector
 	ifstream in(fileName);
@@ -63,7 +65,7 @@ void loadGraph(const char* fileName){
 
 void divideWork(int threadNumber){
 	// initialize threadObjects, assign nodes
-	threads.reserve(threadNumber);
+	threads.reserve(threadNumber+1);
 	for(int i = 0; i < threadNumber; ++i){
 		threadObject thread;
 		threads.push_back(thread);
@@ -83,23 +85,48 @@ void divideWork(int threadNumber){
 }
 
 void bellmanFord(threadObject* thread){
-	
+	thread->threadComplete = true;
 	for(unsigned int i = 0; i < thread->inputNodes.size(); ++i){
 		Node * node = thread->inputNodes[i];
 		for(unsigned int j = 0; j < node->input.size(); ++j){
 			Edge *edge = node->input[j];
 			if(edge->source->cost != INT_MAX && (edge->source->cost + edge->weight) < node->cost)
 			{
+				thread->threadComplete = false;
 				node->cost = edge->source->cost + edge->weight;
 			}
 		}		
 	}
-	pthread_barrier_wait(&barrier);
-}
 
+	pthread_barrier_wait(&barrierCheck2);
+	if(thread->threadID == (threadCount))
+	{
+		test = threadCheck();
+	}
+	pthread_barrier_wait(&barrierCheck);
+	if(test)
+	{
+		printf("EXITING -------------- %d\n", thread->threadID);
+		pthread_exit(0);
+	}
+}
+bool threadCheck()
+{
+	bool test = true;
+	for(int i = 0; i < threadCount; ++i)
+	{
+		if(threads[i].threadComplete == false)
+		{
+			test = false;
+			return test;
+		}
+	}
+	return test;
+}
 void* threadStart(void* args){
 	threadObject* args1 = (threadObject*)args;
 	for(unsigned int i = 0; i < (allNodes.size() - 1) / threadCount; ++i){
+		cnt = 0;
 		bellmanFord(args1);
 	}
 	return args;
@@ -116,23 +143,29 @@ void graphPrint(){
 * graphTest "Filename" ThreadCount
 */
 int main(int args, char* argv[]){
-	clock_t start;
+
 
 	threadCount = atoi(argv[2]);
 
 	loadGraph(argv[1]);
-
+	printf("This happens %d\n", 1);
 	divideWork(threadCount);
 	allNodes[0]->cost = 0;
 	// Start threads
-	pthread_barrier_init(&barrier, NULL, threadCount);
+	pthread_barrier_init(&barrier, NULL, threadCount+1);
+	pthread_barrier_init(&barrierCheck, NULL, threadCount+1);
+	pthread_barrier_init(&barrierCheck2, NULL, threadCount+1);
+
+	threadObject thread;
+	threads.push_back(thread);
 /*
 * Clock start
 */
 	timespec time1, time2;
 	clock_gettime(CLOCK_MONOTONIC, &time1);
-	for(int i = 0; i < threadCount; ++i){
+	for(int i = 0; i < threadCount+1; ++i){
 		//pthread create
+		threads[i].threadID = i;
 		pthread_create (&(threads[i].tid), NULL, threadStart, (void *)(&threads[i]));
 	}
 

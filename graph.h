@@ -27,6 +27,8 @@ class Node{
 public:
 	vector<Edge*> input;
 	int cost;
+	pthread_cond_t cond;
+	bool Available = true;
 public:
 	Node(int c) : cost(c) {};
 	void addEdge(Edge* e){
@@ -37,7 +39,7 @@ public:
 class threadObject{
 public:
 	pthread_t tid;
-	vector<Node*> inputNodes;
+	vector<Edge*> inputEdges;
 	bool threadComplete = true;
 	int threadID;
 };
@@ -47,6 +49,7 @@ public:
 // -----------------
 bool threadCheck();
 static vector<Node*> allNodes;
+static vector<Edge*> allEdges;
 static vector<threadObject> threads;
 static pthread_barrier_t barrier;
 static pthread_barrier_t barrierCheck;

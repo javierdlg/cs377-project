@@ -32,12 +32,13 @@ void loadGraph(const char* fileName){
 			getline(iss, s, ' ');
 			maxNodes = atoi(s.c_str());
 			getline(iss, s, ' ');
-			//maxEdges = atoi(s.c_str());
+			maxEdges = atoi(s.c_str());
 			allNodes.reserve(maxNodes);
+			allEdges.reserve(maxEdges);
 			for(int i = 0; i < maxNodes; ++i)
 			{
 				Node *node = new Node(INT_MAX);
-
+				pthread_cond_init(&(node->cond), NULL);
 				allNodes.push_back(node);
 			}
 			ss.str(string());
@@ -56,7 +57,8 @@ void loadGraph(const char* fileName){
 			weight = atoi(s.c_str());
 			//ss >> weight >> nodeDestination >> nodeSource;
 			Edge *e = new Edge(allNodes[nodeSource], allNodes[nodeDestination], weight);
-			allNodes[nodeDestination]->addEdge(e);
+			allEdges.push_back(e);
+			//allNodes[nodeDestination]->addEdge(e);
 			ss.str(string());
 		}
 	}
@@ -72,30 +74,36 @@ void divideWork(int threadNumber){
 		printf("push back %d\n", i);
 	}
 	for(int i = 0; i < threadNumber; ++i){
-		for(unsigned int j = i; j < allNodes.size(); j += threadNumber){
-			threads[i].inputNodes.push_back(allNodes[j]);
-			for(unsigned int k = 0; k < allNodes[j]->input.size(); ++k){
+		for(unsigned int j = i; j < allEdges.size(); j += threadNumber){
+			threads[i].inputEdges.push_back(allEdges[j]);
+			/*for(unsigned int k = 0; k < allNodes[j]->input.size(); ++k){
 				Edge * e = allNodes[j]->input[k];
-			}
+			}*/
 		}
 	}
-	for (unsigned int i = allNodes.size() - (allNodes.size()%threadNumber); i < allNodes.size(); ++i){
-		threads[threadNumber-1].inputNodes.push_back(allNodes[i]);
+	for (unsigned int i = allEdges.size() - (allEdges.size()%threadNumber); i < allEdges.size(); ++i){
+		threads[threadNumber-1].inputEdges.push_back(allEdges[i]);
 	}
 }
 
 void bellmanFord(threadObject* thread){
 	thread->threadComplete = true;
-	for(unsigned int i = 0; i < thread->inputNodes.size(); ++i){
-		Node * node = thread->inputNodes[i];
-		for(unsigned int j = 0; j < node->input.size(); ++j){
-			Edge *edge = node->input[j];
-			if(edge->source->cost != INT_MAX && (edge->source->cost + edge->weight) < node->cost)
-			{
+	for(unsigned int i = 0; i < thread->inputEdges.size(); ++i){
+		Edge * edge = thread->inputEdges[i];
+		if(edge->source->cost != INT_MAX && (edge->source->cost + edge->weight) < edge->destination->cost)
+		{
+			pthread_mutex_lock(&mutex);
+			while(!edge->destination->Available)
+				pthread_cond_wait(&(edge->destination->cond), &mutex);
+			if((edge->source->cost + edge->weight) < edge->destination->cost)
+			{	
 				thread->threadComplete = false;
-				node->cost = edge->source->cost + edge->weight;
+				edge->destination->cost = edge->source->cost + edge->weight;
 			}
-		}		
+			pthread_cond_signal(&(edge->destination->cond));
+			pthread_mutex_unlock(&mutex);
+		}
+			
 	}
 
 	pthread_barrier_wait(&barrierCheck2);

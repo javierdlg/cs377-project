@@ -8,7 +8,7 @@ FILES :=				\
 	LICENSE				\
 
 CXX			:= g++-4.8
-CXXFLAGS	:= -pedantic -std=c++11 -Wall
+CXXFLAGS	:= -pedantic -std=c++11 -Wall -o3
 LDFLAGS		:= -pthread
 VALGRIND 	:= valgrind
 

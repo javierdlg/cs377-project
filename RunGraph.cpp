@@ -6,8 +6,9 @@
 #include <string>
 #include <pthread.h>
 #include <ctime>
+#include "time.h"
 #include "graph.h"
-
+#define BILLION 1E9
 using namespace std;
 
 static int threadCount;
@@ -128,18 +129,30 @@ int main(int args, char* argv[]){
 /*
 * Clock start
 */
-	start = clock();
+	timespec time1, time2;
+	clock_gettime(CLOCK_MONOTONIC, &time1);
 	for(int i = 0; i < threadCount; ++i){
 		//pthread create
 		pthread_create (&(threads[i].tid), NULL, threadStart, (void *)(&threads[i]));
 	}
-	printf(" Super test %d\n",2);
 
 	// pthread syncronize (barrier)
 	for(int i = 0; i < threadCount; ++i){
 		pthread_join(threads[i].tid, NULL);
 	}
-	cout << "Time: " << (clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl; 
+	clock_gettime(CLOCK_MONOTONIC, &time2);
+	timespec temp;
+	if((time2.tv_nsec - time1.tv_nsec)<0)
+	  {
+	    temp.tv_sec = time2.tv_sec - time1.tv_sec-1;
+	    temp.tv_nsec = 1000000000+time2.tv_nsec-time1.tv_nsec;
+	  }
+	else
+	  {
+	    temp.tv_sec = time2.tv_sec - time1.tv_sec;
+	    temp.tv_nsec = time2.tv_nsec - time1.tv_nsec;
+	  }
+	cout << "Time (from gettime): " << temp.tv_sec << ":" << temp.tv_nsec << endl;
 /*
 * Clock end
 */

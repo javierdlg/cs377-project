@@ -32,7 +32,7 @@ check:
     echo "success";
 
 clean:
-	rm -f RunGraph.tmp
+	rm -f *.tmp
 	rm -f RunGraph
 
 config:

@@ -34,6 +34,8 @@ check:
 clean:
 	rm -f *.tmp
 	rm -f RunGraph
+	rm -f RunGraph.out
+	rm -f RunGraph.log
 
 config:
 	git config -l

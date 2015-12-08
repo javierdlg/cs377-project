@@ -79,7 +79,7 @@ FLOTest:
 	./RunGraph USA-road-d.FLA.gr 8 > USA-road-d.FLA8.tmp
 	./RunGraph USA-road-d.FLA.gr 16 > USA-road-d.FLA16.tmp
 
-RunGraph.tmp: RunGraph SimpleTest RomeTest NYTest COLTest FLOTest
+RunGraph.tmp: RunGraph NYTest COLTest FLOTest
 
 
 #./RunGraph < USA-road-d.NY.gr > RunGraph.tmp 

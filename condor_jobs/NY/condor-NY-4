@@ -1,0 +1,20 @@
+############################################
+#  
+# Bellman-Ford Condor job description file
+# 
+############################################
+
++Group = "UNDER"
++Project = "OTHER"
+
++ProjectDescription = "Testing a multithreaded version of Bellman-Ford"
+
+Executable = ../RunGraph
+Arguments = ../graphs/USA-road-d.NY.gr 4
+Requirements = InMastodon
+#Error = NY/err.NY4
+Output = NY/out.NY4
+#Log = NY/log.4
+
+Notification = Always
+Queue

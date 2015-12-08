@@ -44,7 +44,7 @@ public:
 	int threadID;
 };
 
-// -----------------
+// ----------------- 
 // Global Variables
 // -----------------
 bool threadCheck();

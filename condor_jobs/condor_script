@@ -1,0 +1,39 @@
+#!/bin/bash
+# Script to submit all NY, FLA, W, CRT, and US maps into UT CS condor
+# server each tested with 16, 8, 4, 2, and 1 thread in that order. 
+# To run: "./condor_script"
+
+#NY tests
+condor_submit -name submit32 NY/condor-NY-16
+condor_submit -name submit32 NY/condor-NY-8
+condor_submit -name submit32 NY/condor-NY-4
+condor_submit -name submit32 NY/condor-NY-2
+condor_submit -name submit32 NY/condor-NY-1
+
+#FLA tests
+condor_submit -name submit32 FLA/condor-FLA-16
+condor_submit -name submit32 FLA/condor-FLA-8
+condor_submit -name submit32 FLA/condor-FLA-4
+condor_submit -name submit32 FLA/condor-FLA-2
+condor_submit -name submit32 FLA/condor-FLA-1
+
+#W tests
+condor_submit -name submit32 W/condor-W-16
+condor_submit -name submit32 W/condor-W-8
+condor_submit -name submit32 W/condor-W-4
+condor_submit -name submit32 W/condor-W-2
+condor_submit -name submit32 W/condor-W-1
+
+#CRT tests
+condor_submit -name submit32 CTR/condor-CTR-16
+condor_submit -name submit32 CTR/condor-CTR-8
+condor_submit -name submit32 CTR/condor-CTR-4
+condor_submit -name submit32 CTR/condor-CTR-2
+condor_submit -name submit32 CTR/condor-CTR-1
+
+#US tests
+condor_submit -name submit32 US/condor-US-16
+condor_submit -name submit32 US/condor-US-8
+condor_submit -name submit32 US/condor-US-4
+condor_submit -name submit32 US/condor-US-2
+condor_submit -name submit32 US/condor-US-1

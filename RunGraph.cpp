@@ -71,7 +71,7 @@ void divideWork(int threadNumber){
 	for(int i = 0; i < threadNumber; ++i){
 		threadObject thread;
 		threads.push_back(thread);
-		printf("push back %d\n", i);
+		//printf("push back %d\n", i);
 	}
 	for(int i = 0; i < threadNumber; ++i){
 		for(unsigned int j = i; j < allEdges.size(); j += threadNumber){
@@ -114,7 +114,7 @@ void bellmanFord(threadObject* thread){
 	pthread_barrier_wait(&barrierCheck);
 	if(test)
 	{
-		printf("EXITING -------------- %d\n", thread->threadID);
+		//printf("EXITING -------------- %d\n", thread->threadID);
 		pthread_exit(0);
 	}
 }
@@ -156,7 +156,7 @@ int main(int args, char* argv[]){
 	threadCount = atoi(argv[2]);
 
 	loadGraph(argv[1]);
-	printf("This happens %d\n", 1);
+	//printf("This happens %d\n", 1);
 	divideWork(threadCount);
 	allNodes[0]->cost = 0;
 	// Start threads
@@ -198,5 +198,5 @@ int main(int args, char* argv[]){
 * Clock end
 */
 	// read and print graph
-	graphPrint();
+	//graphPrint();
 }

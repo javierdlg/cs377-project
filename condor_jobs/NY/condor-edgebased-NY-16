@@ -1,0 +1,20 @@
+############################################
+#  
+# Bellman-Ford Condor job description file
+# 
+############################################
+
++Group = "UNDER"
++Project = "OTHER"
+
++ProjectDescription = "Testing a multithreaded version of Bellman-Ford"
+
+Executable = ../EdgeBased
+Arguments = ../graphs/USA-road-d.NY.gr 16
+Requirements = InMastodon
+#Error = NY/err.NY16
+Output = NY/NY16-EdgeBased$(Process).out
+#Log = NY/log.16
+
+Notification = Always
+Queue 5

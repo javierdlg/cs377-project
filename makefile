@@ -1,8 +1,10 @@
 FILES :=				\
 	.gitignore			\
 	README.md			\
-	RunGraph.cpp		\
-	RunGraph.out		\
+	EdgeBased.cpp		\
+	EdgeBased.out		\
+	NodeBased.cpp		\
+	NodeBased.out		\
 	graph.h				\
 	USA-road-d.NY.gr	\
 	LICENSE				\
@@ -33,17 +35,31 @@ check:
 
 clean:
 	rm -f *.tmp
-	rm -f RunGraph
-	rm -f RunGraph.out
-	rm -f RunGraph.log
+	rm -f NodeBased
+	rm -f NodeBased.out
+	rm -f NodeBased.log
+	rm -f EdgeBased
+	rm -f EdgeBased.out
+	rm -f EdgeBased.log
 
 config:
 	git config -l
 
-test: RunGraph.tmp
+#test: RunGraph.tmp
 
-RunGraph: graph.h RunGraph.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) RunGraph.cpp -o RunGraph
+NodeBased: graph.h EdgeBased.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) EdgeBased.cpp -o EdgeBased
+
+EdgeBased: graph.h NodeBased.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) NodeBased.cpp -o NodeBased
+
+
+
+
+
+
+
+
 SimpleTest:
 	./RunGraph graphs/simple.gr 1 > simple1.tmp
 	./RunGraph graphs/simple.gr 2 > simple2.tmp
@@ -79,7 +95,7 @@ FLOTest:
 	./RunGraph graphs/USA-road-d.FLA.gr 8 > USA-road-d.FLA8.tmp
 	./RunGraph graphs/USA-road-d.FLA.gr 16 > USA-road-d.FLA16.tmp
 
-RunGraph.tmp: RunGraph NYTest COLTest FLOTest
+#RunGraph.tmp: RunGraph NYTest COLTest FLOTest
 
 
 #./RunGraph < USA-road-d.NY.gr > RunGraph.tmp 

@@ -1,0 +1,39 @@
+#!/bin/bash
+# Script to submit all NY, FLA, W, CRT, and US maps into UT CS condor
+# server each tested with 16, 8, 4, 2, and 1 thread in that order. 
+# To run: "./condor_script"
+
+#NY tests
+condor_submit -name submit32 NY/condor-edgebased-NY-16
+condor_submit -name submit32 NY/condor-edgebased-NY-8
+condor_submit -name submit32 NY/condor-edgebased-NY-4
+condor_submit -name submit32 NY/condor-edgebased-NY-2
+condor_submit -name submit32 NY/condor-edgebased-NY-1
+
+#FLA tests
+condor_submit -name submit32 FLA/condor-edgebased-FLA-16
+condor_submit -name submit32 FLA/condor-edgebased-FLA-8
+condor_submit -name submit32 FLA/condor-edgebased-FLA-4
+condor_submit -name submit32 FLA/condor-edgebased-FLA-2
+condor_submit -name submit32 FLA/condor-edgebased-FLA-1
+
+#W tests
+condor_submit -name submit32 W/condor-edgebased-W-16
+condor_submit -name submit32 W/condor-edgebased-W-8
+condor_submit -name submit32 W/condor-edgebased-W-4
+condor_submit -name submit32 W/condor-edgebased-W-2
+condor_submit -name submit32 W/condor-edgebased-W-1
+
+#CRT tests
+condor_submit -name submit32 CTR/condor-edgebased-CTR-16
+condor_submit -name submit32 CTR/condor-edgebased-CTR-8
+condor_submit -name submit32 CTR/condor-edgebased-CTR-4
+condor_submit -name submit32 CTR/condor-edgebased-CTR-2
+condor_submit -name submit32 CTR/condor-edgebased-CTR-1
+
+#US tests
+condor_submit -name submit32 US/condor-edgebased-US-16
+condor_submit -name submit32 US/condor-edgebased-US-8
+condor_submit -name submit32 US/condor-edgebased-US-4
+condor_submit -name submit32 US/condor-edgebased-US-2
+condor_submit -name submit32 US/condor-edgebased-US-1

@@ -1,2 +1,1 @@
 condor_jobs/**/log*
-condor_jobs/**/out*

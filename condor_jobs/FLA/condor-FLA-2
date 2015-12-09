@@ -14,7 +14,7 @@ Arguments = ../graphs/USA-road-d.FLA.gr 2
 Requirements = InMastodon
 #Error = FLA/err$(Process).FLA2
 Output = FLA/out$(Process).FLA2
-#Log = FLA/log$(Process).2
+Log = FLA/log$(Process).2
 
 Notification = Always
-Queue 2
+Queue 5

@@ -1,4 +1,4 @@
-############################################
+2############################################
 #  
 # Bellman-Ford Condor job description file
 # 
@@ -10,11 +10,11 @@
 +ProjectDescription = "Testing a multithreaded version of Bellman-Ford"
 
 Executable = ../RunGraph
-Arguments = ../graphs/USA-road-d.FLA.gr 1
+Arguments = ../graphs/USA-road-d.W.gr 2
 Requirements = InMastodon
-#Error = FLA/err$(Process).FLA1
-Output = FLA/out$(Process).FLA1
-Log = FLA/log$(Process).1
+#Error = W/err$(Process).W2
+Output = W/out$(Process).W2
+Log = W/log$(Process).2
 
 Notification = Always
 Queue 5

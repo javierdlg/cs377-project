@@ -17,4 +17,4 @@ Output = NY/out.NY1
 #Log = NY/log.1
 
 Notification = Always
-Queue
+Queue 5

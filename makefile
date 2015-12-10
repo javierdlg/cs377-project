@@ -40,46 +40,57 @@ clean:
 config:
 	git config -l
 
-test: RunGraph.tmp
+test: RunGraph.out
 
 RunGraph: graph.h RunGraph.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) RunGraph.cpp -o RunGraph
-SimpleTest:
-	./RunGraph graphs/simple.gr 1 > simple1.tmp
-	./RunGraph graphs/simple.gr 2 > simple2.tmp
-	./RunGraph graphs/simple.gr 4 > simple4.tmp
-	./RunGraph graphs/simple.gr 8 > simple8.tmp
-	./RunGraph graphs/simple.gr 16 > simple16.tmp
 
-RomeTest:
-	./RunGraph graphs/rometest.gr 1 > rometest1.tmp
-	./RunGraph graphs/rometest.gr 2 > rometest2.tmp
-	./RunGraph graphs/rometest.gr 4 > rometest4.tmp
-	./RunGraph graphs/rometest.gr 8 > rometest8.tmp
-	./RunGraph graphs/rometest.gr 16 > rometest16.tmp
+#SimpleTest:
+#	./RunGraph graphs/simple.gr 1 > simple1.tmp
+#	./RunGraph graphs/simple.gr 2 > simple2.tmp
+#	./RunGraph graphs/simple.gr 4 > simple4.tmp
+#	./RunGraph graphs/simple.gr 8 > simple8.tmp
+#	./RunGraph graphs/simple.gr 16 > simple16.tmp
+
+#RomeTest:
+#	./RunGraph graphs/rometest.gr 1 > rometest1.tmp
+#	./RunGraph graphs/rometest.gr 2 > rometest2.tmp
+#	./RunGraph graphs/rometest.gr 4 > rometest4.tmp
+#	./RunGraph graphs/rometest.gr 8 > rometest8.tmp
+#	./RunGraph graphs/rometest.gr 16 > rometest16.tmp
 
 NYTest:
-	./RunGraph graphs/USA-road-d.NY.gr 1 > USA-road-d.NY1.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 2 > USA-road-d.NY2.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 4 > USA-road-d.NY4.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 8 > USA-road-d.NY8.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 16 > USA-road-d.NY16.tmp
+	./RunGraph graphs/USA-road-d.NY.gr 1 > USA-road-d.NY1.out
+	./RunGraph graphs/USA-road-d.NY.gr 2 > USA-road-d.NY2.out
+	./RunGraph graphs/USA-road-d.NY.gr 4 > USA-road-d.NY4.out
+	./RunGraph graphs/USA-road-d.NY.gr 8 > USA-road-d.NY8.out
+	./RunGraph graphs/USA-road-d.NY.gr 12 > USA-road-d.NY12.out
+	./RunGraph graphs/USA-road-d.NY.gr 16 > USA-road-d.NY16.out
 
-COLTest:
-	./RunGraph graphs/USA-road-d.COL.gr 1 > USA-road-d.COL1.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 2 > USA-road-d.COL2.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 4 > USA-road-d.COL4.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 8 > USA-road-d.COL8.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 16 > USA-road-d.COL16.tmp
+#COLTest:
+#	./RunGraph graphs/USA-road-d.COL.gr 1 > USA-road-d.COL1.out
+#	./RunGraph graphs/USA-road-d.COL.gr 2 > USA-road-d.COL2.out
+#	./RunGraph graphs/USA-road-d.COL.gr 4 > USA-road-d.COL4.out
+#	./RunGraph graphs/USA-road-d.COL.gr 8 > USA-road-d.COL8.out
+#	./RunGraph graphs/USA-road-d.COL.gr 16 > USA-road-d.COL16.out
 
-FLOTest:
-	./RunGraph graphs/USA-road-d.FLA.gr 1 > USA-road-d.FLA1.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 2 > USA-road-d.FLA2.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 4 > USA-road-d.FLA4.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 8 > USA-road-d.FLA8.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 16 > USA-road-d.FLA16.tmp
+FLATest:
+	./RunGraph graphs/USA-road-d.FLA.gr 1 > USA-road-d.FLA1.out
+	./RunGraph graphs/USA-road-d.FLA.gr 2 > USA-road-d.FLA2.out
+	./RunGraph graphs/USA-road-d.FLA.gr 4 > USA-road-d.FLA4.out
+	./RunGraph graphs/USA-road-d.FLA.gr 8 > USA-road-d.FLA8.out
+	./RunGraph graphs/USA-road-d.FLA.gr 12 > USA-road-d.FLA12.out
+	./RunGraph graphs/USA-road-d.FLA.gr 16 > USA-road-d.FLA16.out
 
-RunGraph.tmp: RunGraph NYTest COLTest FLOTest
+WTest:
+	./RunGraph graphs/USA-road-d.W.gr 1 > USA-road-d.W1.out
+	./RunGraph graphs/USA-road-d.W.gr 2 > USA-road-d.W2.out
+	./RunGraph graphs/USA-road-d.W.gr 4 > USA-road-d.W4.out
+	./RunGraph graphs/USA-road-d.W.gr 8 > USA-road-d.W8.out
+	./RunGraph graphs/USA-road-d.W.gr 12 > USA-road-d.W12.out
+	./RunGraph graphs/USA-road-d.W.gr 16 > USA-road-d.W16.out
+
+RunGraph.out: RunGraph NYTest FLATest WTest
 
 
 #./RunGraph < USA-road-d.NY.gr > RunGraph.tmp 

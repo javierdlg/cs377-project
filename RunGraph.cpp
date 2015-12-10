@@ -32,13 +32,12 @@ void loadGraph(const char* fileName){
 			getline(iss, s, ' ');
 			maxNodes = atoi(s.c_str());
 			getline(iss, s, ' ');
-			maxEdges = atoi(s.c_str());
+			//maxEdges = atoi(s.c_str());
 			allNodes.reserve(maxNodes);
-			allEdges.reserve(maxEdges);
 			for(int i = 0; i < maxNodes; ++i)
 			{
 				Node *node = new Node(INT_MAX);
-				pthread_cond_init(&(node->cond), NULL);
+
 				allNodes.push_back(node);
 			}
 			ss.str(string());
@@ -57,8 +56,7 @@ void loadGraph(const char* fileName){
 			weight = atoi(s.c_str());
 			//ss >> weight >> nodeDestination >> nodeSource;
 			Edge *e = new Edge(allNodes[nodeSource], allNodes[nodeDestination], weight);
-			allEdges.push_back(e);
-			//allNodes[nodeDestination]->addEdge(e);
+			allNodes[nodeDestination]->addEdge(e);
 			ss.str(string());
 		}
 	}
@@ -71,39 +69,33 @@ void divideWork(int threadNumber){
 	for(int i = 0; i < threadNumber; ++i){
 		threadObject thread;
 		threads.push_back(thread);
-		//printf("push back %d\n", i);
+		printf("push back %d\n", i);
 	}
 	for(int i = 0; i < threadNumber; ++i){
-		for(unsigned int j = i; j < allEdges.size(); j += threadNumber){
-			threads[i].inputEdges.push_back(allEdges[j]);
-			/*for(unsigned int k = 0; k < allNodes[j]->input.size(); ++k){
+		for(unsigned int j = i; j < allNodes.size(); j += threadNumber){
+			threads[i].inputNodes.push_back(allNodes[j]);
+			for(unsigned int k = 0; k < allNodes[j]->input.size(); ++k){
 				Edge * e = allNodes[j]->input[k];
-			}*/
+			}
 		}
 	}
-	for (unsigned int i = allEdges.size() - (allEdges.size()%threadNumber); i < allEdges.size(); ++i){
-		threads[threadNumber-1].inputEdges.push_back(allEdges[i]);
+	for (unsigned int i = allNodes.size() - (allNodes.size()%threadNumber); i < allNodes.size(); ++i){
+		threads[threadNumber-1].inputNodes.push_back(allNodes[i]);
 	}
 }
 
 void bellmanFord(threadObject* thread){
 	thread->threadComplete = true;
-	for(unsigned int i = 0; i < thread->inputEdges.size(); ++i){
-		Edge * edge = thread->inputEdges[i];
-		if(edge->source->cost != INT_MAX && (edge->source->cost + edge->weight) < edge->destination->cost)
-		{
-			pthread_mutex_lock(&mutex);
-			while(!edge->destination->Available)
-				pthread_cond_wait(&(edge->destination->cond), &mutex);
-			if((edge->source->cost + edge->weight) < edge->destination->cost)
-			{	
+	for(unsigned int i = 0; i < thread->inputNodes.size(); ++i){
+		Node * node = thread->inputNodes[i];
+		for(unsigned int j = 0; j < node->input.size(); ++j){
+			Edge *edge = node->input[j];
+			if(edge->source->cost != INT_MAX && (edge->source->cost + edge->weight) < node->cost)
+			{
 				thread->threadComplete = false;
-				edge->destination->cost = edge->source->cost + edge->weight;
+				node->cost = edge->source->cost + edge->weight;
 			}
-			pthread_cond_signal(&(edge->destination->cond));
-			pthread_mutex_unlock(&mutex);
-		}
-			
+		}		
 	}
 
 	pthread_barrier_wait(&barrierCheck2);
@@ -114,7 +106,7 @@ void bellmanFord(threadObject* thread){
 	pthread_barrier_wait(&barrierCheck);
 	if(test)
 	{
-		//printf("EXITING -------------- %d\n", thread->threadID);
+		printf("EXITING -------------- %d\n", thread->threadID);
 		pthread_exit(0);
 	}
 }
@@ -156,7 +148,7 @@ int main(int args, char* argv[]){
 	threadCount = atoi(argv[2]);
 
 	loadGraph(argv[1]);
-	//printf("This happens %d\n", 1);
+	printf("This happens %d\n", 1);
 	divideWork(threadCount);
 	allNodes[0]->cost = 0;
 	// Start threads
@@ -193,7 +185,7 @@ int main(int args, char* argv[]){
 	    temp.tv_sec = time2.tv_sec - time1.tv_sec;
 	    temp.tv_nsec = time2.tv_nsec - time1.tv_nsec;
 	  }
-	cout << "Time (from gettime): " << temp.tv_sec << ":" << temp.tv_nsec << endl;
+	cout << "Time (from gettime): " << temp.tv_sec << "." << temp.tv_nsec << endl;
 /*
 * Clock end
 */

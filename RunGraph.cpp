@@ -4,23 +4,18 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-#include <pthread.h>
 #include <ctime>
 #include "time.h"
 #include "graph.h"
-#include <atomic>
 #define BILLION 1E9
 using namespace std;
 
-static int threadCount;
-static std::atomic<int> cnt = ATOMIC_VAR_INIT(16);
-static bool test;
 void loadGraph(const char* fileName){
 	// read DIMACS file and add nodes/edges to the allNodes vector
 	ifstream in(fileName);
 	string line;
 	stringstream ss;
-	int maxNodes, maxEdges, nodeSource, nodeDestination, weight;
+	int maxNodes, nodeSource, nodeDestination, weight;
 	while (getline(in, line)){
 		if(line.front() == 'c')
 			continue;
@@ -32,13 +27,11 @@ void loadGraph(const char* fileName){
 			getline(iss, s, ' ');
 			maxNodes = atoi(s.c_str());
 			getline(iss, s, ' ');
-			maxEdges = atoi(s.c_str());
 			allNodes.reserve(maxNodes);
-			allEdges.reserve(maxEdges);
 			for(int i = 0; i < maxNodes; ++i)
 			{
 				Node *node = new Node(INT_MAX);
-				pthread_cond_init(&(node->cond), NULL);
+
 				allNodes.push_back(node);
 			}
 			ss.str(string());
@@ -57,87 +50,30 @@ void loadGraph(const char* fileName){
 			weight = atoi(s.c_str());
 			//ss >> weight >> nodeDestination >> nodeSource;
 			Edge *e = new Edge(allNodes[nodeSource], allNodes[nodeDestination], weight);
-			allEdges.push_back(e);
-			//allNodes[nodeDestination]->addEdge(e);
+			allNodes[nodeDestination]->addEdge(e);
 			ss.str(string());
 		}
 	}
 	in.close();
 }
 
-void divideWork(int threadNumber){
-	// initialize threadObjects, assign nodes
-	threads.reserve(threadNumber+1);
-	for(int i = 0; i < threadNumber; ++i){
-		threadObject thread;
-		threads.push_back(thread);
-		//printf("push back %d\n", i);
-	}
-	for(int i = 0; i < threadNumber; ++i){
-		for(unsigned int j = i; j < allEdges.size(); j += threadNumber){
-			threads[i].inputEdges.push_back(allEdges[j]);
-			/*for(unsigned int k = 0; k < allNodes[j]->input.size(); ++k){
-				Edge * e = allNodes[j]->input[k];
-			}*/
-		}
-	}
-	for (unsigned int i = allEdges.size() - (allEdges.size()%threadNumber); i < allEdges.size(); ++i){
-		threads[threadNumber-1].inputEdges.push_back(allEdges[i]);
-	}
-}
 
-void bellmanFord(threadObject* thread){
-	thread->threadComplete = true;
-	for(unsigned int i = 0; i < thread->inputEdges.size(); ++i){
-		Edge * edge = thread->inputEdges[i];
-		if(edge->source->cost != INT_MAX && (edge->source->cost + edge->weight) < edge->destination->cost)
-		{
-			pthread_mutex_lock(&mutex);
-			while(!edge->destination->Available)
-				pthread_cond_wait(&(edge->destination->cond), &mutex);
-			if((edge->source->cost + edge->weight) < edge->destination->cost)
-			{	
-				thread->threadComplete = false;
-				edge->destination->cost = edge->source->cost + edge->weight;
-			}
-			pthread_cond_signal(&(edge->destination->cond));
-			pthread_mutex_unlock(&mutex);
-		}
+void bellmanFord(){
+	for(unsigned int i = 0; i < allNodes.size(); ++i){
+		Node * node = allNodes[i];
+		for(unsigned int j = 0; j < node->input.size(); ++j){
+			Edge *edge = node->input[j];
+			if(edge->source->cost != INT_MAX && (edge->source->cost + edge->weight) < node->cost)
+				node->cost = edge->source->cost + edge->weight;
 			
+		}		
 	}
+}
 
-	pthread_barrier_wait(&barrierCheck2);
-	if(thread->threadID == (threadCount))
-	{
-		test = threadCheck();
+void Start(){
+	for(unsigned int i = 0; i < (allNodes.size() - 1); ++i){
+		bellmanFord();
 	}
-	pthread_barrier_wait(&barrierCheck);
-	if(test)
-	{
-		//printf("EXITING -------------- %d\n", thread->threadID);
-		pthread_exit(0);
-	}
-}
-bool threadCheck()
-{
-	bool test = true;
-	for(int i = 0; i < threadCount; ++i)
-	{
-		if(threads[i].threadComplete == false)
-		{
-			test = false;
-			return test;
-		}
-	}
-	return test;
-}
-void* threadStart(void* args){
-	threadObject* args1 = (threadObject*)args;
-	for(unsigned int i = 0; i < (allNodes.size() - 1) / threadCount; ++i){
-		cnt = 0;
-		bellmanFord(args1);
-	}
-	return args;
 }
 
 void graphPrint(){
@@ -153,34 +89,15 @@ void graphPrint(){
 int main(int args, char* argv[]){
 
 
-	threadCount = atoi(argv[2]);
 
 	loadGraph(argv[1]);
-	//printf("This happens %d\n", 1);
-	divideWork(threadCount);
 	allNodes[0]->cost = 0;
-	// Start threads
-	pthread_barrier_init(&barrier, NULL, threadCount+1);
-	pthread_barrier_init(&barrierCheck, NULL, threadCount+1);
-	pthread_barrier_init(&barrierCheck2, NULL, threadCount+1);
 
-	threadObject thread;
-	threads.push_back(thread);
-/*
-* Clock start
-*/
+
 	timespec time1, time2;
 	clock_gettime(CLOCK_MONOTONIC, &time1);
-	for(int i = 0; i < threadCount+1; ++i){
-		//pthread create
-		threads[i].threadID = i;
-		pthread_create (&(threads[i].tid), NULL, threadStart, (void *)(&threads[i]));
-	}
+	Start();
 
-	// pthread syncronize (barrier)
-	for(int i = 0; i < threadCount; ++i){
-		pthread_join(threads[i].tid, NULL);
-	}
 	clock_gettime(CLOCK_MONOTONIC, &time2);
 	timespec temp;
 	if((time2.tv_nsec - time1.tv_nsec)<0)
@@ -198,5 +115,5 @@ int main(int args, char* argv[]){
 * Clock end
 */
 	// read and print graph
-	//graphPrint();
+	graphPrint();
 }

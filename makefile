@@ -10,77 +10,122 @@ FILES :=				\
 CXX			:= g++-4.8
 CXXFLAGS	:= -pedantic -std=c++11 -Wall -o3
 LDFLAGS		:= -pthread
-VALGRIND 	:= valgrind
-
-check:
-	@not_found=0;                                 \
-    for i in $(FILES);                            \
-    do                                            \
-        if [ -e $$i ];                            \
-        then                                      \
-            echo "$$i found";                     \
-        else                                      \
-            echo "$$i NOT FOUND";                 \
-            not_found=`expr "$$not_found" + "1"`; \
-        fi                                        \
-    done;                                         \
-    if [ $$not_found -ne 0 ];                     \
-    then                                          \
-        echo "$$not_found failures";              \
-        exit 1;                                   \
-    fi;                                           \
-    echo "success";
 
 clean:
-	rm -f *.tmp
-	rm -f RunGraph
-	rm -f RunGraph.out
-	rm -f RunGraph.log
+	rm -f *.out
 
-config:
-	git config -l
+test: NodeRunGraph.out EdgeRunGraph.out
 
-test: RunGraph.tmp
+NodeRunGraph: NodeGraph.h NodeRunGraph.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) NodeRunGraph.cpp -o NodeRunGraph
 
-RunGraph: graph.h RunGraph.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) RunGraph.cpp -o RunGraph
-SimpleTest:
-	./RunGraph graphs/simple.gr 1 > simple1.tmp
-	./RunGraph graphs/simple.gr 2 > simple2.tmp
-	./RunGraph graphs/simple.gr 4 > simple4.tmp
-	./RunGraph graphs/simple.gr 8 > simple8.tmp
-	./RunGraph graphs/simple.gr 16 > simple16.tmp
+NodeNYTest:
+	./NodeRunGraph graphs/USA-road-d.NY.gr 1 > NodeUSA-road-d.NY1.out
+	./NodeRunGraph graphs/USA-road-d.NY.gr 2 > NodeUSA-road-d.NY2.out
+	./NodeRunGraph graphs/USA-road-d.NY.gr 4 > NodeUSA-road-d.NY4.out
+	./NodeRunGraph graphs/USA-road-d.NY.gr 8 > NodeUSA-road-d.NY8.out
+	./NodeRunGraph graphs/USA-road-d.NY.gr 16 > NodeUSA-road-d.NY16.out
 
-RomeTest:
-	./RunGraph graphs/rometest.gr 1 > rometest1.tmp
-	./RunGraph graphs/rometest.gr 2 > rometest2.tmp
-	./RunGraph graphs/rometest.gr 4 > rometest4.tmp
-	./RunGraph graphs/rometest.gr 8 > rometest8.tmp
-	./RunGraph graphs/rometest.gr 16 > rometest16.tmp
+NodeFLATest:
+	./NodeRunGraph graphs/USA-road-d.FLA.gr 1 > NodeUSA-road-d.FLA1.out
+	./NodeRunGraph graphs/USA-road-d.FLA.gr 2 > NodeUSA-road-d.FLA2.out
+	./NodeRunGraph graphs/USA-road-d.FLA.gr 4 > NodeUSA-road-d.FLA4.out
+	./NodeRunGraph graphs/USA-road-d.FLA.gr 8 > NodeUSA-road-d.FLA8.out
+	./NodeRunGraph graphs/USA-road-d.FLA.gr 16 > NodeUSA-road-d.FLA16.out
 
-NYTest:
-	./RunGraph graphs/USA-road-d.NY.gr 1 > USA-road-d.NY1.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 2 > USA-road-d.NY2.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 4 > USA-road-d.NY4.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 8 > USA-road-d.NY8.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 16 > USA-road-d.NY16.tmp
+NodeWTest:
+	./NodeRunGraph graphs/USA-road-d.W.gr 1 > NodeUSA-road-d.W1.out
+	./NodeRunGraph graphs/USA-road-d.W.gr 2 > NodeUSA-road-d.W2.out
+	./NodeRunGraph graphs/USA-road-d.W.gr 4 > NodeUSA-road-d.W4.out
+	./NodeRunGraph graphs/USA-road-d.W.gr 8 > NodeUSA-road-d.W8.out
+	./NodeRunGraph graphs/USA-road-d.W.gr 16 > NodeUSA-road-d.W16.out
 
-COLTest:
-	./RunGraph graphs/USA-road-d.COL.gr 1 > USA-road-d.COL1.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 2 > USA-road-d.COL2.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 4 > USA-road-d.COL4.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 8 > USA-road-d.COL8.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 16 > USA-road-d.COL16.tmp
+NodeUSTest:
+	./NodeRunGraph graphs/USA-road-d.US.gr 1 > NodeUSA-road-d.US1.out
+	./NodeRunGraph graphs/USA-road-d.US.gr 2 > NodeUSA-road-d.US2.out
+	./NodeRunGraph graphs/USA-road-d.US.gr 4 > NodeUSA-road-d.US4.out
+	./NodeRunGraph graphs/USA-road-d.US.gr 8 > NodeUSA-road-d.US8.out
+	./NodeRunGraph graphs/USA-road-d.US.gr 16 > NodeUSA-road-d.US16.out
 
-FLOTest:
-	./RunGraph graphs/USA-road-d.FLA.gr 1 > USA-road-d.FLA1.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 2 > USA-road-d.FLA2.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 4 > USA-road-d.FLA4.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 8 > USA-road-d.FLA8.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 16 > USA-road-d.FLA16.tmp
+NodeRMAT16Test:
+	./NodeRunGraph graphs/rmat16.dimacs 1 > Nodermat16.dimacs1.out
+	./NodeRunGraph graphs/rmat16.dimacs 2 > Nodermat16.dimacs2.out
+	./NodeRunGraph graphs/rmat16.dimacs 4 > Nodermat16.dimacs4.out
+	./NodeRunGraph graphs/rmat16.dimacs 8 > Nodermat16.dimacs8.out
+	./NodeRunGraph graphs/rmat16.dimacs 12 > Nodermat16.dimacs12.out
+	./NodeRunGraph graphs/rmat16.dimacs 16 > Nodermat16.dimacs16.out
 
-RunGraph.tmp: RunGraph NYTest COLTest FLOTest
+NodeRMAT20Test:
+	./NodeRunGraph graphs/rmat20.dimacs 1 > Nodermat20.dimacs1.out
+	./NodeRunGraph graphs/rmat20.dimacs 2 > Nodermat20.dimacs2.out
+	./NodeRunGraph graphs/rmat20.dimacs 4 > Nodermat20.dimacs4.out
+	./NodeRunGraph graphs/rmat20.dimacs 8 > Nodermat20.dimacs8.out
+	./NodeRunGraph graphs/rmat20.dimacs 12 > Nodermat20.dimacs12.out
+	./NodeRunGraph graphs/rmat20.dimacs 16 > Nodermat20.dimacs16.out
 
+NodeRMAT22Test:
+	./NodeRunGraph graphs/rmat22.dimacs 1 > Nodermat22.dimacs1.out
+	./NodeRunGraph graphs/rmat22.dimacs 2 > Nodermat22.dimacs2.out
+	./NodeRunGraph graphs/rmat22.dimacs 4 > Nodermat22.dimacs4.out
+	./NodeRunGraph graphs/rmat22.dimacs 8 > Nodermat22.dimacs8.out
+	./NodeRunGraph graphs/rmat22.dimacs 12 > Nodermat22.dimacs12.out
+	./NodeRunGraph graphs/rmat22.dimacs 16 > Nodermat22.dimacs16.out
 
-#./RunGraph < USA-road-d.NY.gr > RunGraph.tmp 
-#diff RunGraph.tmp RunGraph.out
+NodeRunGraph.out: NodeRunGraph NodeNYTest NodeFLATest NodeWTest NodeUSTest NodeRMAT16Test NodeRMAT20Test NodeRMAT22Test
+
+EdgeRunGraph: EdgeGraph.h EdgeRunGraph.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) EdgeRunGraph.cpp -o EdgeRunGraph
+
+EdgeNYTest:
+	./EdgeRunGraph graphs/USA-road-d.NY.gr 1 > EdgeUSA-road-d.NY1.out
+	./EdgeRunGraph graphs/USA-road-d.NY.gr 2 > EdgeUSA-road-d.NY2.out
+	./EdgeRunGraph graphs/USA-road-d.NY.gr 4 > EdgeUSA-road-d.NY4.out
+	./EdgeRunGraph graphs/USA-road-d.NY.gr 8 > EdgeUSA-road-d.NY8.out
+	./EdgeRunGraph graphs/USA-road-d.NY.gr 16 > EdgeUSA-road-d.NY16.out
+
+EdgeFLATest:
+	./EdgeRunGraph graphs/USA-road-d.FLA.gr 1 > EdgeUSA-road-d.FLA1.out
+	./EdgeRunGraph graphs/USA-road-d.FLA.gr 2 > EdgeUSA-road-d.FLA2.out
+	./EdgeRunGraph graphs/USA-road-d.FLA.gr 4 > EdgeUSA-road-d.FLA4.out
+	./EdgeRunGraph graphs/USA-road-d.FLA.gr 8 > EdgeUSA-road-d.FLA8.out
+	./EdgeRunGraph graphs/USA-road-d.FLA.gr 16 > EdgeUSA-road-d.FLA16.out
+
+EdgeWTest:
+	./EdgeRunGraph graphs/USA-road-d.W.gr 1 > EdgeUSA-road-d.W1.out
+	./EdgeRunGraph graphs/USA-road-d.W.gr 2 > EdgeUSA-road-d.W2.out
+	./EdgeRunGraph graphs/USA-road-d.W.gr 4 > EdgeUSA-road-d.W4.out
+	./EdgeRunGraph graphs/USA-road-d.W.gr 8 > EdgeUSA-road-d.W8.out
+	./EdgeRunGraph graphs/USA-road-d.W.gr 16 > EdgeUSA-road-d.W16.out
+
+EdgeUSTest:
+	./EdgeRunGraph graphs/USA-road-d.US.gr 1 > EdgeUSA-road-d.US1.out
+	./EdgeRunGraph graphs/USA-road-d.US.gr 2 > EdgeUSA-road-d.US2.out
+	./EdgeRunGraph graphs/USA-road-d.US.gr 4 > EdgeUSA-road-d.US4.out
+	./EdgeRunGraph graphs/USA-road-d.US.gr 8 > EdgeUSA-road-d.US8.out
+	./EdgeRunGraph graphs/USA-road-d.US.gr 16 > EdgeUSA-road-d.US16.out
+
+EdgeRMAT16Test:
+	./EdgeRunGraph graphs/rmat16.dimacs 1 > Edgermat16.dimacs1.out
+	./EdgeRunGraph graphs/rmat16.dimacs 2 > Edgermat16.dimacs2.out
+	./EdgeRunGraph graphs/rmat16.dimacs 4 > Edgermat16.dimacs4.out
+	./EdgeRunGraph graphs/rmat16.dimacs 8 > Edgermat16.dimacs8.out
+	./EdgeRunGraph graphs/rmat16.dimacs 12 > Edgermat16.dimacs12.out
+	./EdgeRunGraph graphs/rmat16.dimacs 16 > Edgermat16.dimacs16.out
+
+EdgeRMAT20Test:
+	./EdgeRunGraph graphs/rmat20.dimacs 1 > Edgermat20.dimacs1.out
+	./EdgeRunGraph graphs/rmat20.dimacs 2 > Edgermat20.dimacs2.out
+	./EdgeRunGraph graphs/rmat20.dimacs 4 > Edgermat20.dimacs4.out
+	./EdgeRunGraph graphs/rmat20.dimacs 8 > Edgermat20.dimacs8.out
+	./EdgeRunGraph graphs/rmat20.dimacs 12 > Edgermat20.dimacs12.out
+	./EdgeRunGraph graphs/rmat20.dimacs 16 > Edgermat20.dimacs16.out
+
+EdgeRMAT22Test:
+	./EdgeRunGraph graphs/rmat22.dimacs 1 > Edgermat22.dimacs1.out
+	./EdgeRunGraph graphs/rmat22.dimacs 2 > Edgermat22.dimacs2.out
+	./EdgeRunGraph graphs/rmat22.dimacs 4 > Edgermat22.dimacs4.out
+	./EdgeRunGraph graphs/rmat22.dimacs 8 > Edgermat22.dimacs8.out
+	./EdgeRunGraph graphs/rmat22.dimacs 12 > Edgermat22.dimacs12.out
+	./EdgeRunGraph graphs/rmat22.dimacs 16 > Edgermat22.dimacs16.out
+
+EdgeRunGraph.out: EdgeRunGraph EdgeNYTest EdgeFLATest EdgeWTest EdgeUSTest EdgeRMAT16Test EdgeRMAT20Test EdgeRMAT22Test

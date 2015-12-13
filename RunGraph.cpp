@@ -37,8 +37,6 @@ void loadGraph(const char* fileName){
 			ss.str(string());
 		}
 		else if(line.front() == 'a'){
-			//cout << line;
-			//ss << line << line << line;
 			istringstream iss(line);
 			string s;
 			getline(iss, s, ' ');
@@ -48,7 +46,6 @@ void loadGraph(const char* fileName){
 			nodeDestination = atoi(s.c_str()) - 1;
 			getline(iss, s, ' ');
 			weight = atoi(s.c_str());
-			//ss >> weight >> nodeDestination >> nodeSource;
 			Edge *e = new Edge(allNodes[nodeSource], allNodes[nodeDestination], weight);
 			allNodes[nodeDestination]->addEdge(e);
 			ss.str(string());

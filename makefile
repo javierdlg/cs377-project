@@ -10,77 +10,38 @@ FILES :=				\
 CXX			:= g++-4.8
 CXXFLAGS	:= -pedantic -std=c++11 -Wall -o3
 LDFLAGS		:= -pthread
-VALGRIND 	:= valgrind
-
-check:
-	@not_found=0;                                 \
-    for i in $(FILES);                            \
-    do                                            \
-        if [ -e $$i ];                            \
-        then                                      \
-            echo "$$i found";                     \
-        else                                      \
-            echo "$$i NOT FOUND";                 \
-            not_found=`expr "$$not_found" + "1"`; \
-        fi                                        \
-    done;                                         \
-    if [ $$not_found -ne 0 ];                     \
-    then                                          \
-        echo "$$not_found failures";              \
-        exit 1;                                   \
-    fi;                                           \
-    echo "success";
 
 clean:
-	rm -f *.tmp
+	rm -f *.out
 	rm -f RunGraph
-	rm -f RunGraph.out
-	rm -f RunGraph.log
 
-config:
-	git config -l
 
-test: RunGraph.tmp
+test: RunGraph.out
 
 RunGraph: graph.h RunGraph.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) RunGraph.cpp -o RunGraph
 SimpleTest:
-	./RunGraph graphs/simple.gr 1 > simple1.tmp
-	./RunGraph graphs/simple.gr 2 > simple2.tmp
-	./RunGraph graphs/simple.gr 4 > simple4.tmp
-	./RunGraph graphs/simple.gr 8 > simple8.tmp
-	./RunGraph graphs/simple.gr 16 > simple16.tmp
+	./RunGraph graphs/simple.gr 1 > simple1.out
+	./RunGraph graphs/simple.gr 2 > simple2.out
+	./RunGraph graphs/simple.gr 4 > simple4.out
+	./RunGraph graphs/simple.gr 8 > simple8.out
+	./RunGraph graphs/simple.gr 12 > simple12.out
+	./RunGraph graphs/simple.gr 16 > simple16.out
 
 RomeTest:
-	./RunGraph graphs/rometest.gr 1 > rometest1.tmp
-	./RunGraph graphs/rometest.gr 2 > rometest2.tmp
-	./RunGraph graphs/rometest.gr 4 > rometest4.tmp
-	./RunGraph graphs/rometest.gr 8 > rometest8.tmp
-	./RunGraph graphs/rometest.gr 16 > rometest16.tmp
+	./RunGraph graphs/rometest.gr 1 > rometest1.out
+	./RunGraph graphs/rometest.gr 2 > rometest2.out
+	./RunGraph graphs/rometest.gr 4 > rometest4.out
+	./RunGraph graphs/rometest.gr 8 > rometest8.out
+	./RunGraph graphs/rometest.gr 12 > rometest12.out
+	./RunGraph graphs/rometest.gr 16 > rometest16.out
 
 NYTest:
-	./RunGraph graphs/USA-road-d.NY.gr 1 > USA-road-d.NY1.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 2 > USA-road-d.NY2.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 4 > USA-road-d.NY4.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 8 > USA-road-d.NY8.tmp
-	./RunGraph graphs/USA-road-d.NY.gr 16 > USA-road-d.NY16.tmp
+	./RunGraph graphs/USA-road-d.NY.gr 1 > USA-road-d.NY1.out
+	./RunGraph graphs/USA-road-d.NY.gr 2 > USA-road-d.NY2.out
+	./RunGraph graphs/USA-road-d.NY.gr 4 > USA-road-d.NY4.out
+	./RunGraph graphs/USA-road-d.NY.gr 8 > USA-road-d.NY8.out
+	./RunGraph graphs/USA-road-d.NY.gr 12 > USA-road-d.NY12.out
+	./RunGraph graphs/USA-road-d.NY.gr 16 > USA-road-d.NY16.out
 
-COLTest:
-	./RunGraph graphs/USA-road-d.COL.gr 1 > USA-road-d.COL1.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 2 > USA-road-d.COL2.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 4 > USA-road-d.COL4.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 8 > USA-road-d.COL8.tmp
-	./RunGraph graphs/USA-road-d.COL.gr 16 > USA-road-d.COL16.tmp
-
-FLOTest:
-	./RunGraph graphs/USA-road-d.FLA.gr 1 > USA-road-d.FLA1.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 2 > USA-road-d.FLA2.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 4 > USA-road-d.FLA4.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 8 > USA-road-d.FLA8.tmp
-	./RunGraph graphs/USA-road-d.FLA.gr 16 > USA-road-d.FLA16.tmp
-
-RunGraph.tmp: RunGraph NYTest COLTest FLOTest
-
-
-#./RunGraph < USA-road-d.NY.gr > RunGraph.tmp 
-#diff RunGraph.tmp RunGraph.out
+RunGraph.out: RunGraph SimpleTest RomeTest NYTest
